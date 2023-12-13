@@ -1,19 +1,53 @@
 package core;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class PerlinNoise {
 
     private final int[] permutation = new int[512];
+    Gson gson = new Gson();
 
-    public PerlinNoise() {
+    public PerlinNoise(boolean randomize) {
         List<Integer> tempList = new ArrayList<>();
-        for (int i = 0; i < 256; i++) {
-            tempList.add(i); // Fill with values 0 to 255
+
+        if (randomize == true) {
+            for (int i = 0; i < 256; i++) {
+                tempList.add(i); // Fill with values 0 to 255
+            }
+            Collections.shuffle(tempList); // Shuffle the list
+            // Convert List to JSON
+            String json = gson.toJson(tempList);
+            try (FileWriter writer = new FileWriter("output.json")) {
+                writer.write(json);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try (FileReader reader = new FileReader("output.json")) {
+                // Define the type of the data in the JSON file
+                Type listType = new TypeToken<Integer[]>() {}.getType();
+
+                // Deserialize JSON to Array
+                Integer[] dataArray = gson.fromJson(reader, listType);
+                tempList = Arrays.asList(dataArray);
+                // Output the array
+                System.out.println(Arrays.toString(dataArray));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
-        Collections.shuffle(tempList); // Shuffle the list
+
         for (int i = 0; i < 256; i++) {
             permutation[i] = tempList.get(i); // Copy values to permutation array
             permutation[256 + i] = permutation[i]; // Repeat the permutation at the second half of the array

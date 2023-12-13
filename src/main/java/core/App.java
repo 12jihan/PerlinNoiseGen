@@ -10,14 +10,14 @@ import java.io.IOException;
  *
  */
 public class App {
-    private static PerlinNoise perlin = new PerlinNoise();
+    private static PerlinNoise perlin = new PerlinNoise(false);
     private static int width = 512;
     private static int height = 512;
 
     // Multi-Octave Noise Parameters
-    private static int octaves = 1;
-    private static double persistence = 0.99;
-    private static double frequency = 0.02;
+    private static int octaves = 10;
+    private static double persistence = 0.7;
+    private static double frequency = 0.010;
     private static double amplitude = 0.01;
 
     public static void main(String[] args) {
